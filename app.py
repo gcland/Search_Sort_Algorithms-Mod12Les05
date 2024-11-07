@@ -34,9 +34,8 @@ class Video(db.Model):
 # }
 
 @app.route('/videos', methods=['GET'])
-def get_videos():
+def get_videos():   # merge sort function sorts the list alphabetically using merge sort
     videos = Video.query.all()
-    print(videos_schema.jsonify(videos))
     json_videos = videos_schema.jsonify(videos).json
     merge_sort(json_videos)
     return json_videos
@@ -45,9 +44,7 @@ def get_videos():
 def view_by_videos_id():
     id = request.args.get('id')
     video = Video.query.filter(Video.id == id).first()
-    print(video)
     if video:
-        print(video_schema.jsonify(video))
         return video_schema.jsonify(video)
     else:
         return jsonify({"message": "Customer not found"}), 404
@@ -55,8 +52,7 @@ def view_by_videos_id():
 @app.route('/videos/by-title', methods=['GET']) #/by-title?title="The Art of Coding" (example)
 def view_by_video_title():
     title = request.args.get('title')
-    json_videos = get_videos().json
-    print(json_videos)
+    json_videos = get_videos()
     video = binary_seach(json_videos, title)
     if video:
         return video
@@ -69,7 +65,6 @@ def binary_seach(video_titles, title):
     success = False
     while low <= high:
         mid = (low+high)//2
-        print(video_titles[mid]['title'])
         if ord(video_titles[mid]['title'][0]) == ord(title[0]):
             index = mid
             while ord(video_titles[mid]['title'][0]) == ord(title[0]):
@@ -113,7 +108,7 @@ def add_videos():
     try:
         json_videos = request.json
         videos_list = json_videos['videos']
-        # videos_list = merge_sort(json_videos['videos'])
+        # videos_list = merge_sort(json_videos['videos']) #input to sort before adding into database
         for video_title in videos_list: 
             data = {'title': video_title}
             video_data = video_schema.load(data) 
